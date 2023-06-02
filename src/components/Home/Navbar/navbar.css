@@ -1,0 +1,23 @@
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 2rem;
+  background-color: #f6f6f6;
+}
+.navbar-container .nav-center {
+  display: flex;
+  gap: 2rem;
+}
+.nav-right {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+
+}
+.nav-right input,
+.nav-right button,
+.nav-right p {
+  margin: auto;
+  text-align: center;
+  cursor:pointer;
+}
