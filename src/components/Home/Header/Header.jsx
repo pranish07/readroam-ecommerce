@@ -7,7 +7,7 @@ export const Header = () => {
     <div>
       <h2>One shop stop for all your book needs and moods.</h2>
       <button>
-        <NavLink to="/shop">Shop Now</NavLink>
+        <NavLink to="/products">Shop Now</NavLink>
       </button>
     </div>
   );

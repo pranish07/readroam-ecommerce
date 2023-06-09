@@ -9,7 +9,9 @@ export const Navbar = () => {
     // padding: isActive ? "1rem" : "0.5rem",
     color: isActive ? "red" : "",
   });
-  const [login,setLogin] = useState(false)
+
+  const [login, setLogin] = useState(false);
+
   return (
     <div className="navbar-container">
       <h1>ReadRoam</h1>
@@ -17,15 +19,15 @@ export const Navbar = () => {
         <NavLink style={getActiveStyle} to="/">
           <h2>Home</h2>
         </NavLink>
-        <NavLink style={getActiveStyle} to="/shop">
+        <NavLink style={getActiveStyle} to="/products">
           <h2>Shop</h2>
         </NavLink>
       </div>
       <div className="nav-right">
-        {/* <input type="text" placeholder="Search" /> */}
-        <button onClick={()=>setLogin(login=>!login)}>
+        <input type="text" placeholder="Search" />
+        <button onClick={() => setLogin((login) => !login)}>
           <NavLink style={getActiveStyle} to="/login">
-            {login?"Logout":"Login"}
+            {login ? "Logout" : "Login"}
           </NavLink>
         </button>
         <p>

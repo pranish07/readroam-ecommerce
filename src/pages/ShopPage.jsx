@@ -1,14 +1,15 @@
 import React from 'react'
 import { Navbar } from '../components/Home/Navbar/Navbar'
 import { Shop } from '../components/Products/Shop'
-import { ProductListing } from '../components/Products/ProductListings/ProductListing'
+import { ProductCard } from '../components/Products/ProductCard/ProductCard'
 
 export const ShopPage = () => {
   return (
     <div>
         <Navbar />
+        
         <Shop />
-        <ProductListing />
+        <ProductCard />
     </div>
   )
 }
