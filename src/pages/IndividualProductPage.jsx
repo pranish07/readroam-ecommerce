@@ -1,10 +1,16 @@
-import React from 'react'
-import { IndividualProduct } from '../components/Products/IndividualProduct/IndividualProduct'
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { ProductCard } from "../components/ProductCard/ProductCard";
 
-export const IndividualProductPage = () => {
+export const IndividualProduct = () => {
+  const { productId } = useParams();
+
   return (
     <div>
-        <IndividualProduct />
+      hello individual Product
+      {/* <ProductCard {...product} /> */}
+      {/* <ProductCard key={productId} product={product}/> */}
+      <Link to="/products">See all</Link>
     </div>
-  )
-}
+  );
+};
