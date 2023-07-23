@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CartContext } from "../../contexts/CartContext";
 import { DataContext } from "../../contexts/DataContext";
 
@@ -7,17 +7,14 @@ import "./productCard.css"
 export const ProductCard = ({key,product}) => {
   const { addToCart } = useContext(CartContext);
   const {productState} = useContext(DataContext)
-  
-  const {_id,title,imgSrc,price,inStock,rating} = product;
-console.log(product)
+  const navigate = useNavigate();
+  const {_id,title,imgSrc,price,inStock,rating,author} = product;
   return (
 
     <div className="productCard">
-      <NavLink to={`/products/${_id}`}>
-      <div className="image-container">
+      <div className="image-container" onClick={()=>navigate(`/products/${_id}`)}>
         <img src={imgSrc} alt="" height={200} width={100}/>
       </div>
-      </NavLink>
       <div className="info-container">
         <NavLink to={`product/${_id}`}>
           <h3>{title}</h3>
@@ -31,7 +28,8 @@ console.log(product)
           </div>
         </div>
       </div>
-      <button>Add to cart</button>
+      <button onClick={()=>addToCart(title)}>Add to cart</button>
+      <button>Add to wishlist</button>
     </div>
 
     // <div

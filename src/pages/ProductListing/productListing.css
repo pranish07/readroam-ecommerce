@@ -2,3 +2,8 @@
     display: grid;
     grid-template-columns: 30% 70%;
 }
+.product-listing-container{
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+    gap:1rem;
+} 
