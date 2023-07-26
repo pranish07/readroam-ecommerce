@@ -2,25 +2,42 @@ import React, { useState } from "react";
 import "./filter.css";
 import { useData } from "../../contexts/DataContext";
 
-export const Filter = ({ products }) => {
+export const Filter = () => {
+  const {
+    dispatch,
+    state: {
+      filters: { sort, selectedCategories, selectedSizes, byStock, rating },
+      products,
+    },
+  } = useData();
   const [slider, setSlider] = useState(0);
-  const { productState, productDispatch } = useData();
+  // const [priceRange, setPriceRange] = useState(1500);
+
+  // const { productState, productDispatch } = useData();
+  const [isFilters, setIsFilters] = useState(false);
+
   const handleChange = (e) => {
     setSlider(e.target.value);
   };
-  console.log(productState);
+  const genreFilter = products.reduce(
+    (acc, { categoryName }) =>
+      acc.includes(categoryName) ? [...acc] : [...acc, categoryName],
+    []
+  );
+  const handleRangeChange = (value) => {
+    dispatch({ type: "FILTER_BY_RATING", payload: value });
+  };
+
+  // const handlePriceRangeChange = (e) => {
+  //   setPriceRange(e.target.value);
+  //   dispatch({ type: "FILTER_BY_PRICE_RANGE", payload: e.target.value });
+  // };
+
   return (
     <div>
       <h3>Filters</h3>
       <div className="clear-filters">
-        <button
-          onClick={() =>
-            productDispatch({
-              type: "CLEAR_FILTERS",
-              payload: { products: productState.products },
-            })
-          }
-        >
+        <button onClick={() => dispatch({ type: "CLEAR_ALL_FILTERS" })}>
           Clear Filters
         </button>
       </div>
@@ -31,9 +48,9 @@ export const Filter = ({ products }) => {
           name="sort"
           id="sortHigh"
           onChange={() =>
-            productDispatch({ type: "SORT_BY_PRICE", payload: "HIGH_TO_LOW" })
+            dispatch({ type: "SORT_BY_PRICE", payload: "HIGH_TO_LOW" })
           }
-          checked={productState.sortByPrice === "HIGH_TO_LOW"}
+          checked={sort === "HIGH_TO_LOW"}
         />
         <label htmlFor="sortLow">Low to High</label>
         <input
@@ -41,30 +58,29 @@ export const Filter = ({ products }) => {
           name="sort"
           id="sortLow"
           onChange={() =>
-            productDispatch({ type: "SORT_BY_PRICE", payload: "LOW_TO_HIGH" })
+            dispatch({ type: "SORT_BY_PRICE", payload: "LOW_TO_HIGH" })
           }
-          checked={productState.sortByPrice === "LOW_TO_HIGH"}
+          checked={sort === "LOW_TO_HIGH"}
         />
       </div>
 
       <div className="genre-category-container">
         <h3>Genre Category</h3>
-        <input type="checkbox" id="horror" />
-        <label htmlFor="horror">horror</label>
-
-        <input type="checkbox" id="fantasy" />
-        <label htmlFor="fantasy">fantasy</label>
-
-        <input type="checkbox" id="sci-fi" />
-        <label htmlFor="sci-fi">sci-fi</label>
-
-        <input type="checkbox" id="non-fiction" />
-        <label htmlFor="non-fiction">non-fiction</label>
-
-        <input type="checkbox" id="romance" />
-        <label htmlFor="romance">romance</label>
+        {genreFilter?.map((category, index) => (
+          <label key={index}>
+            <input
+              type="checkbox"
+              value={category}
+              onChange={(e) =>
+                dispatch({ type: "FILTER_BY_CATEGORIES", payload: category })
+              }
+              checked={selectedCategories.includes(category)}
+            />
+            {category}
+          </label>
+        ))}
       </div>
-
+      {/* 
       <div className="price-slider">
         <h3>Price</h3>
         <input
@@ -76,27 +92,24 @@ export const Filter = ({ products }) => {
           id="myRange"
           onChange={handleChange}
         />
-      </div>
+      </div> */}
 
       <div className="rating-container">
         <ul className="rating-list">
           <h3>Rating</h3>
-          <li>
-            <input type="radio" name="rating" value="2" id="rating-4" />{" "}
-            <label htmlFor="rating-4">4 star and above</label>
-          </li>
-          <li>
-            <input type="radio" name="rating" value="3" id="rating-3" />{" "}
-            <label htmlFor="rating-3">3 star and above</label>
-          </li>
-          <li>
-            <input type="radio" name="rating" value="4" id="rating-2" />{" "}
-            <label htmlFor="rating-2">2 star and above</label>
-          </li>
-          <li>
-            <input type="radio" name="rating" value="5" id="rating-1" />
-            <label htmlFor="rating-1">1 star and above</label>
-          </li>
+          {[1, 2, 3, 4].map((num,index) => (
+            <li key={index}>
+              <input
+                type="radio"
+                name="rating"
+                value={num}
+                id="rating"
+                onChange={() => handleRangeChange(num)}
+                checked={rating === num}
+              />{" "}
+              <label htmlFor="rating">{num} star and above</label>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

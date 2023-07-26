@@ -5,20 +5,27 @@ import { makeServer } from "./server";
 import { App } from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
-import { CartProvider, CartContext } from "./contexts/CartContext";
-import {DataProvider} from "./contexts/DataContext";
+// import { CartProvider, CartContext } from "./contexts/CartContext";
+import { DataProvider } from "./contexts/DataContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { OrderProvider } from "./contexts/OrderContext";
+import { AddressProvider } from "./contexts/AddressContext";
 // Call make Server
 makeServer();
 
-export { CartContext };
+// export { CartContext };
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <DataProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <AuthProvider>
+          <OrderProvider>
+            <AddressProvider>
+              <App />
+            </AddressProvider>
+          </OrderProvider>
+        </AuthProvider>
       </DataProvider>
     </Router>
   </React.StrictMode>,

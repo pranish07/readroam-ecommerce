@@ -1,69 +1,71 @@
-import React, {
+import {
   createContext,
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from "react";
+import { dataReducer, initialState } from "../reducers/ProductReducer";
 
 export const DataContext = createContext();
 
-const initialState = {
-  products: [],
-  allCategories: [],
-  searchInput: "",
-  sortByPrice: "",
-  genreCategory: "",
-  priceRange: "",
-  rating: "",
-  clearFilters: "",
-};
+export const DataProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(dataReducer, initialState);
+  const [loading, setLoading] = useState(true);
+  const [firstproduct, setProduct] = useState({});
 
-const reducer = (state, { type, payload }) => {
-  console.log(payload);
-  switch (type) {
-    case "INITIAL_DATA":
-      return { ...state, products: payload };
-    case "SORT_BY_PRICE":
-      return { ...state, sortByPrice: payload };
-    case "CLEAR_FILTERS":
-      return { ...initialState, products: payload.products };
-    default:
-      return state;
-  }
-};
-
-export function DataProvider({ children }) {
-  const [productState, productDispatch] = useReducer(reducer, initialState);
-  // const [products,setProducts] = useState({})
+  const getCategories = async () => {
+    try {
+      const response = await fetch("/api/categories");
+      const { categories } = await response.json();
+      dispatch({ type: "INITIALIZE_CATEGORIES", payload: categories });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getProducts = async () => {
     try {
-      const response = await fetch(`api/products`);
-      const { products } = await response.json();
-      productDispatch({ type: "INITIAL_DATA", payload: products });
-    } catch (err) {
-      console.error(err);
+      const resp = await fetch("/api/products");
+      const { products } = await resp.json();
+      dispatch({ type: "INITIALIZE_PRODUCTS", payload: products });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCarts = async () => {
+    try {
+      const response = await fetch("/api/user/cart", {
+        method: "GET",
+        headers: {
+          authorization: localStorage.getItem("token"),
+        },
+      });
+      const data = await response.json();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
+    getCategories();
     getProducts();
+    getCarts();
   }, []);
-
-  const filteredByPrice = productState.sortByPrice
-    ? productState.products.sort((a, b) =>
-        productState.sortByPrice === "HIGH_TO_LOW"
-          ? Number(b.price) - Number(a.price)
-          : Number(a.price) - Number(b.price)
-      )
-    : productState;
-
-  // const clearAllFilters = productState.clearFilters?productState:filteredByPrice;
-
+console.log(state)
   return (
-    <DataContext.Provider value={{ productState, productDispatch,filteredByPrice }}>
-      {children}
+    <DataContext.Provider
+      value={{ state, dispatch, loading, setLoading, setProduct, firstproduct }}
+    >
+      <> {children}</>
     </DataContext.Provider>
   );
-}
+};
 
 export const useData = () => useContext(DataContext);

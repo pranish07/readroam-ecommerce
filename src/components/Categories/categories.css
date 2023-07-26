@@ -4,8 +4,10 @@
     justify-content: center;
     gap:1rem;
 
+
 }
-.category-container a{
+.category-container div{
     display: grid;
     justify-content: center;
+    cursor: pointer;
 }

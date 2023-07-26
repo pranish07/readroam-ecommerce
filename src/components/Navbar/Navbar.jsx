@@ -1,46 +1,134 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-
+import {
+  AiOutlineMenu,
+  AiOutlineShoppingCart,
+  AiOutlineHeart,
+  AiOutlineUser,
+} from "react-icons/ai";
+import { MdOutlineLocalMall } from "react-icons/md";
+import { RxCross1 } from "react-icons/rx";
+// import logo from "../../Assets/shopping-cart.png";
 import "./navbar.css";
-export const Navbar = () => {
-  const getActiveStyle = ({ isActive }) => ({
-    // margin: "1rem 0",
-    // fontWeight: isActive ? "600" : "200",
-    // padding: isActive ? "1rem" : "0.5rem",
-    color: isActive ? "red" : "",
-  });
+import { NavLink, useNavigate } from "react-router-dom";
+import { useData } from "../../contexts/DataContext";
 
-  const [login, setLogin] = useState(false);
+export const Navbar = () => {
+  const [menuClass, setMenuClass] = useState("hide-menu");
+
+  const {
+    state: { cart, wishlist },
+    dispatch,
+  } = useData();
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  const handleMenuClick = (data) => {
+    const updatedDisplay = data === "hide" ? "hide-menu" : "menus";
+    setMenuClass(updatedDisplay);
+  };
+
+  const handleSearchProduct = (e) => {
+    navigate("/products");
+    dispatch({ type: "SEARCH_PRODUCT", payload: e.target.value });
+  };
 
   return (
-    <div className="navbar-container">
-      <h1>ReadRoam</h1>
-      <div className="nav-center">
-        <NavLink style={getActiveStyle} to="/">
-          <h2>Home</h2>
-        </NavLink>
-        <NavLink style={getActiveStyle} to="/products">
-          <h2>Shop</h2>
-        </NavLink>
+    <>
+      <nav className=" navigation flex justify-between align-center">
+        <h1 className="navigation-header">
+          <NavLink className="header-link flex align-center" to="/">
+            <span className="margin-left-1"> ReadRoam</span>
+          </NavLink>
+        </h1>
+        <div className="search-navBar">
+          <input
+            type="text"
+            list="search-products"
+            className="search-bar"
+            placeholder="Search Product"
+            onChange={handleSearchProduct}
+          />
+        </div>
+
+        {menuClass === "hide-menu" ? (
+          <div className="navigation-menu" onClick={() => handleMenuClick()}>
+            <AiOutlineMenu />
+          </div>
+        ) : (
+          <div
+            className="navigation-menu"
+            onClick={() => handleMenuClick("hide")}
+          >
+            <RxCross1 />
+          </div>
+        )}
+
+        <ul className={menuClass}>
+          <li className="menu-item">
+            <NavLink className="nav-link" to="/products">
+              <MdOutlineLocalMall />
+            </NavLink>
+          </li>
+          <li className="menu-item menu-item-cart">
+            <NavLink to="/wishlist" className="nav-link">
+              <AiOutlineHeart />
+              {wishlist?.length > 0 && token && (
+                <span className="cart-length">{wishlist?.length}</span>
+              )}
+            </NavLink>
+          </li>
+          <li className="menu-item menu-item-cart">
+            <NavLink to="/cart" className="nav-link">
+              <AiOutlineShoppingCart />
+              {cart?.length > 0 && token && (
+                <span className="cart-length">{cart?.length}</span>
+              )}
+            </NavLink>
+          </li>
+          <li className="menu-item">
+            <NavLink to="/profile" className="nav-link">
+              <AiOutlineUser />
+            </NavLink>
+          </li>
+        </ul>
+        <ul className="menus-md">
+          <li className="menu-item">
+            <NavLink className="nav-link" to="/products">
+              <MdOutlineLocalMall />
+            </NavLink>
+          </li>
+          <li className="menu-item">
+            <NavLink to="/wishlist" className="nav-link">
+              <AiOutlineHeart />
+              {token && wishlist?.length > 0 && (
+                <span className="cart-length">{wishlist?.length}</span>
+              )}
+            </NavLink>
+          </li>
+          <li className="menu-item">
+            <NavLink to="/cart" className="nav-link">
+              <AiOutlineShoppingCart />
+              {token && cart?.length > 0 && (
+                <span className="cart-length">{cart?.length}</span>
+              )}
+            </NavLink>
+          </li>
+          <li className="menu-item">
+            <NavLink to="/profile" className="nav-link">
+              <AiOutlineUser />
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+      <div className="search-navBar-mobile-view ">
+        <input
+          type="text"
+          list="search-products"
+          className="search-bar"
+          placeholder="Search Product"
+          onChange={handleSearchProduct}
+        />
       </div>
-      <div className="nav-right">
-        <input type="text" placeholder="Search" />
-        <button onClick={() => setLogin((login) => !login)}>
-          <NavLink style={getActiveStyle} to="/login">
-            {login ? "Logout" : "Login"}
-          </NavLink>
-        </button>
-        <p>
-          <NavLink style={getActiveStyle} to="/wishlist">
-            wishlist
-          </NavLink>
-        </p>
-        <p>
-          <NavLink style={getActiveStyle} to="/cart">
-            cart
-          </NavLink>
-        </p>
-      </div>
-    </div>
+    </>
   );
 };
