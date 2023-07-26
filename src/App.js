@@ -1,6 +1,4 @@
 import React from "react";
-import Mockman from "mockman-js";
-
 // import { Auth } from "./Auth";
 import { HomePage } from "./pages/HomePage";
 import { CartPage } from "./pages/CartPage";
@@ -31,7 +29,6 @@ export const App = () => {
         <Route path="/products" element={<ProductListing />} />
         <Route path="/product/:productId" element={<IndividualProduct />} />
         {/* <Route path="/auth" element={<Auth />} /> */}
-        <Route path="/mockman" element={<Mockman />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/profile" element={<Profile />}/>
